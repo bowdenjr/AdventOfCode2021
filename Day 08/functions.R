@@ -26,68 +26,39 @@ count_1478s <- function(df)
   
 }
 
-identify_digits_from_signals <- function(df)
-{
-
-  output = rep(-1,10)
-  char5 = df[1,][nchar(df[1,])==5]
-  char6 = df[1,][nchar(df[1,])==6]
-  
-  for (i in 1:ncol(df))
-  {
-    # Can deduce 1,4 7 and 8 immediately
-    if (nchar(df[i])==2){output[i] = 1}
-    else if (nchar(df[i])==4){output[i] = 4}
-    else if (nchar(df[i])==3){output[i] = 7}
-    else if (nchar(df[i])==7){output[i] = 8}
-  }
-  
-  
-  if (nchar(str)==6)
-  {
-  # 0 will be missing a letter that all remaining digits have
-  
-  # 6 will only have one letter in common with 1 and is length 6
-    
-  # 9 is the last one with length 6
-    
-    
-  }  
-    
-  
-  return(output)
-
-  
-
-  
-  
-  # 3 will be length 5 and have both letter from 1
-  # 5 will differ by one letter from 9
-  # 2 is the last one
-  
-
-  
-}
-
-
-
-
 sort_all_elements <- function(df)
 {
   # Sorts outputvals df in each element, but does not change position
+  df <- apply(df,c(1,2),unlist)
   df2 <- apply(df,c(1,2),strsplit,split="")
   df3 <- apply(df2,c(1,2),unlist)
   df4 <- lapply(df3,sort) # can't use apply apparently, because R is stupid
   df5 <- lapply(df4,paste,collapse='')
-  df6 <- data.frame(matrix(df5,nrow=10,ncol=4))
+  df6 <- data.frame(matrix(df5,nrow=nrow(df),ncol=ncol(df)))
   return(df6)
 }
 
-
-
-
-
-
+count_letters <- function(vec){
+  counta = 0
+  countb = 0
+  countc = 0
+  countd = 0
+  counte = 0
+  countf = 0
+  countg = 0
+  
+  for (i in 1:length(vec))
+  {
+    counta = counta + (unlist(gregexpr("a",unlist(vec[i])))!=-1)
+    countb = countb + (unlist(gregexpr("b",unlist(vec[i])))!=-1)
+    countc = countc + (unlist(gregexpr("c",unlist(vec[i])))!=-1)
+    countd = countd + (unlist(gregexpr("d",unlist(vec[i])))!=-1)
+    counte = counte + (unlist(gregexpr("e",unlist(vec[i])))!=-1)
+    countf = countf + (unlist(gregexpr("f",unlist(vec[i])))!=-1)
+    countg = countg + (unlist(gregexpr("g",unlist(vec[i])))!=-1)
+  }
+  return(c(counta,countb,countc,countd,counte,countf,countg))
+}
 
 decode <- function(vec)
 {
@@ -106,9 +77,6 @@ decode <- function(vec)
   return(output)
   
 }
-
-# need something to distinguish between 0,6,9 and something between 2,3,5
-
 
 
 

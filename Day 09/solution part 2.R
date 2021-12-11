@@ -1,10 +1,13 @@
 library(tidyverse)
 source('functions.R')
-df <- load_data('aoc day 9.txt')
 
+################################################################################
+# PART 1
+################################################################################
+
+df <- load_data('aoc day 9.txt')
 # Was helpful for part 2: https://www.youtube.com/watch?v=VuiXOc81UDM
 
-# Sum around each value
 n = nrow(df)
 m = ncol(df)
 
@@ -48,7 +51,9 @@ low_points <- low_points + 1
 answer <- sum(low_points[low_points!=-1])
 print(paste("Part 1 answer is =",answer))
 
+################################################################################
 # PART 2
+################################################################################
 seen <<- data.frame(matrix(rep(FALSE,n*m), nrow=n, ncol=m))
 
 flood_sums = c()

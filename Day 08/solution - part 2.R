@@ -1,89 +1,127 @@
 setwd("D:/GitHub Repos/AdventOfCode2021/Day 08")
 source('functions.R')
 
-df <- load_data('test AOC - Day 8.txt')
+df <- load_data('AOC - Day 8.txt')
 outputvals <- get_outputvals(df)
 signals <- get_signals(df)
-
-
-
+decoded <- data.frame(matrix(rep(0,nrow(outputvals)*ncol(outputvals)),nrow = nrow(outputvals),ncol = ncol(outputvals)))
 df = signals
 
-
 # decode the signals, get a vector of length 10 to act as the mapping
-# the vector will be c("abcdfg","ab","abcefg",...) where each element is sorted alpha and each element maps to it's index digit
+# the vector will be c("abcdfg","ab","abcefg",...) where each element is 
+# sorted alpha and each element maps to it's index digit
 
-# identify_digits_from_signals(signals[1,])
 
-output = rep(-1,10)
-char5 = df[1,][nchar(df[1,])==5]
-char6 = df[1,][nchar(df[1,])==6]
-
-for (i in 1:ncol(df))
+for (i in 1:nrow(signals))
 {
-  # Can deduce 1,4 7 and 8 immediately
-  if (nchar(df[1,i])==2){output[i] = 1}
-  else if (nchar(df[1,i])==4){output[i] = 4}
-  else if (nchar(df[1,i])==3){output[i] = 7}
-  else if (nchar(df[1,i])==7){output[i] = 8}
+  
+  output = rep(-1,10) # the mapping of signals to digits
+  
+  for (j in 1:ncol(df))
+  {
+    # Can deduce 1,4 7 and 8 immediately
+    if (nchar(df[i,j])==2){output[j] = 1}
+    else if (nchar(df[i,j])==4){output[j] = 4}
+    else if (nchar(df[i,j])==3){output[j] = 7}
+    else if (nchar(df[i,j])==7){output[j] = 8}
+  }
+  
+  remiaing_signals = df[i,][output==-1]
+  letter_counts <- count_letters(remiaing_signals)
+  
+  # 0 will be missing a letter that all remaining digits have
+  # where countx is 5 AND it appears in all 5char strings
+  
+  for (len6remaining in remiaing_signals[nchar(remiaing_signals)==6])
+  {
+    for (x in c('a','b','c','d','e','f','g')[(letter_counts==5)])
+    {
+      if (unlist(gregexpr(x,len6remaining))==-1)
+      {
+        output[(df[i,]==len6remaining)] = 0
+      }
+    }
+  }
+  
+  remiaing_signals = df[i,][output==-1]
+  
+  for (len6remaining in remiaing_signals[nchar(remiaing_signals)==6])
+  {
+    found = 0
+    # 6 will only have one letter in common with 1 and is length 6
+    # Loop through letters for 1
+    for (x in unlist(strsplit(unlist(signals[i,][output==1]),split="")))
+    {
+      if (unlist(gregexpr(x,len6remaining))!=-1)
+      {
+        found = found + 1  
+      }
+    }
+    if (found == 1)
+    {
+      output[(df[i,]==len6remaining)] = 6    
+    }
+  }
+  remiaing_signals = df[i,][output==-1]
+  
+  # 9 is the last one with length 6
+  output[df[i,]==unlist(remiaing_signals[nchar(remiaing_signals)==6])] <- 9
+  
+  remiaing_signals = df[i,][output==-1]
+  
+  # 3 has is the only one with all the letters from 7
+  for (remaining in remiaing_signals)
+  {
+    found = 0
+    for (x in unlist(strsplit(unlist(df[i,][output==7]),split="")))
+    {
+      if (unlist(gregexpr(x,remaining))!=-1)
+      {
+        found = found + 1  
+      }    
+    }
+    if (found == 3)
+    {
+      output[(df[i,]==remaining)] = 3
+    }
+  }
+  
+  remiaing_signals = df[i,][output==-1]
+  # 5 will differ by one letter from 9
+  #find the letter that it is 9 and 2, but not in 5
+  
+  for (remaining in remiaing_signals)
+  {
+    found = 0
+    for (x in unlist(strsplit(unlist(df[i,][output==9]),split="")))
+    {
+      if(unlist(gregexpr(x,remaining))!=-1)
+      {
+        found = found + 1 
+      }
+    }
+    if (found==5)
+    {
+      output[(df[i,]==remaining)] = 5
+    }
+  }
+  
+  # 2 is the last one
+  remiaing_signals = df[i,][output==-1]
+  output[df[i,]==unlist(remiaing_signals[nchar(remiaing_signals)==5])] <- 2
+  
+  apply(outputvals,c(1,2),unlist)
+  
+  signals = sort_all_elements(signals)
+  
+  for (j in 1:ncol(outputvals[i,]))
+  {
+    outputvals[i,j] = paste(sort(unlist(strsplit(as.character(outputvals[i,j]),""))),collapse="")
+    decoded[i,j] = output[which(signals[i,]==outputvals[i,j])]
+  }
+
 }
 
-counta = 0
-countb = 0
-countc = 0
-countd = 0
-counte = 0
-countf = 0
-countg = 0
-
-remiaing_signals = df[1,][output==-1]
-
-for (i in 1:length(remiaing_signals))
-{
-  counta = counta + (unlist(gregexpr("a",unlist(remiaing_signals[i])))!=-1)
-  countb = countb + (unlist(gregexpr("b",unlist(remiaing_signals[i])))!=-1)
-  countc = countc + (unlist(gregexpr("c",unlist(remiaing_signals[i])))!=-1)
-  countd = countd + (unlist(gregexpr("d",unlist(remiaing_signals[i])))!=-1)
-  counte = counte + (unlist(gregexpr("e",unlist(remiaing_signals[i])))!=-1)
-  countf = countf + (unlist(gregexpr("f",unlist(remiaing_signals[i])))!=-1)
-  countg = countg + (unlist(gregexpr("g",unlist(remiaing_signals[i])))!=-1)
-}
-
-if (nchar(df[1,i])==6)
-{
-# 0 will be missing a letter that all remaining digits have
-
-# 6 will only have one letter in common with 1 and is length 6
-  
-# 9 is the last one with length 6
-  
-  
-}  
-  
-
-
-
-
-# map to digits 
-
-
-
-# df_to_decode <- sort_all_elements(outputvals)
-# 
-# unlist_df <- apply(df_to_decode,c(1,2),unlist)
-# decoded_df <- apply(unlist_df,c(1,2),decode)
-
-# print(paste("There are",answer,"instances of 1,4,7 or 8"))
-
-# 0 - combinations of "abcdeg"
-# 1 - combinations of "cg"
-# 2 - combinations of "acdfg"
-# 3 - combinations of "abcdf"
-# 4 - combinations of "cefg"
-# 5 - combinations of "bcdef"
-# 6 - combinations of "bcdefg"
-# 7 - combinations of "bcg"
-# 8 - combinations of "abcdefg"
-# 9 - combinations of "abcdef"
-
-
+answers<-as.numeric(apply(decoded,1,paste,collapse = ""))
+print(paste("Answer is",sum(answers)))
+            
