@@ -15,50 +15,38 @@ depth_first_search <- function(df,i,j,seen,size)
   # RECURSIVE FUNCTION
   n = nrow(df)
   m = ncol(df)
-  output = 0
+  seen <- get("seen",.GlobalEnv)
   
   if (i < 1 | i > n | j < 1 | j > m){
     
-    # Do nothing
+    # print("OW")
     
   } else {
     
     if ( seen[i,j] == TRUE | df[i,j] == 9 ) {
       
-      # Do nothing
+      # print("Seen or wall")
       
       } else {
         
-        print(paste("Counting at",i,j))
-        seen[i,j] = TRUE
-        size = size + 1
-        print(paste("Size is now",size))
-        
-        print("Going down")
+        seen[i,j] <<- TRUE
+        size <<- get("size",.GlobalEnv) + 1
         depth_first_search(df,(i+1),j,seen,size)
-        print("Going up")
         depth_first_search(df,(i-1),j,seen,size)
-        print("Going right")
         depth_first_search(df,i,(j+1),seen,size)
-        print("Going left")
         depth_first_search(df,i,(j-1),seen,size)
-        
-        print(paste("Size is now",size))
-        
-        return(size)
       } 
   }
 }
 
-flood_sum <- function(df,i,j,seen,size)
+flood_sum <- function(df,i,j,seen)
 {
-  size = 0
+  size <<- 0
   if (seen[i,j]){
     #return nothing
   } else {
     output = depth_first_search(df,i,j,seen,size)
-    print(output)
-    return(output)
+    return(get("size",.GlobalEnv))
   }
 }
 
