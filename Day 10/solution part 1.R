@@ -1,63 +1,13 @@
 library(tidyverse)
+source("functions.R")
 
-df <- readLines('test aoc day 9.txt')
-totalchars <- sum(nchar(df))
+df <- read.table('aoc day 10.txt',colClasses="character")
 
-df <- strsplit(df, "")
+error_score = 0
 
-# Order of stored chars
-# "(","[","{","<",
-
-# ")","]","}",">"
-totals = list()
-
-
-# count the number of instances, +1 on encountering left and -1 on encountering right
-
-for (i in 1:length(df))
-{
-  print(paste("start row",i))
-  print("( [ { <")
-  chunk_count = rep(0,4)
-  
-  for (j in 1:length(df[[i]]))
-  {
-    x = df[[i]][j]
-    
-    if (x == "(") {
-      chunk_count[1] = chunk_count[1] + 1
-    }
-    else if (x == "[") {
-      chunk_count[2] = chunk_count[2] + 1
-    }
-    else if (x == "{") {
-      chunk_count[3] = chunk_count[3] + 1
-    }
-    else if (x == "<") {
-      chunk_count[4] = chunk_count[4] + 1
-    }
-    else if (x == ")") {
-      chunk_count[1] = chunk_count[1] - 1
-    }
-    else if (x == "]") {
-      chunk_count[2] = chunk_count[2] - 1
-    }
-    else if (x == "}") {
-      chunk_count[3] = chunk_count[3] - 1
-    }
-    else if (x == ">") {
-      chunk_count[4] = chunk_count[4] - 1
-    }
-    
-    
-    print(c(chunk_count[1],chunk_count[2],chunk_count[3],chunk_count[4],sum(chunk_count)))
-  
-      
-  totals[[i]] = chunk_count
-  }
-  
+for (i in 1:nrow(df)){
+  error_score = c(error_score,checker(df[i,]))
 }
 
-
-
+print(sum(error_score))
 
