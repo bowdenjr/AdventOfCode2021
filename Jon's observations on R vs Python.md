@@ -7,8 +7,8 @@ It realy isn't a general purpose langauge.
 ## Positives
 
 * Sometimes the things you need are right there and have more simple, sensible function names than Python (e.g. colSum, rowSum, rollSum etc).
-* It's *trying* to be helpful
-* Not actually that bad once you work out which is best from array,matrix and data.frame
+* It's **trying** to be helpful
+* Data loading **might** not be that bad - once you work out which is best from array, matrix and data.frame
 
 ## Negatives
 
