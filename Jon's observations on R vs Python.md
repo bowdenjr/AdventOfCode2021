@@ -23,3 +23,4 @@ It realy isn't a general purpose langauge.
 * I can't be bothered with print(paste()) all the time?
 * Re-do doesn't work in RStudio - really?
 * Data frames are forever reformatting themselves 
+* read.table(..sep='->') doesn't work because the delimiter is more than one character.
